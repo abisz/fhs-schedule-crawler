@@ -9,6 +9,7 @@
   "author": "Simon Reinsperger",
   "license": "ISC",
   "dependencies": {
+    "moment": "^2.15.1",
     "nightmare": "^2.7.0"
   }
 }

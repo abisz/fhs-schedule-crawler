@@ -6,6 +6,8 @@ try {
 }
 
 const Nightmare = require('nightmare'),
+      Parser = require('./Parser.js'),
+      parser = new Parser(),
       nightmare = Nightmare({
         show: true,
       });
@@ -32,9 +34,5 @@ nightmare
   })
   .end()
   .then( (result) => {
-    parseEvents(result);
+    parser.getEvents(result);
   });
-
-function parseEvents (raw) {
-  console.log(raw);
-}
