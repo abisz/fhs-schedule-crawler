@@ -1,0 +1,14 @@
+{
+  "name": "fhs-schedule-crawler",
+  "version": "0.0.0",
+  "description": "tool to save individual schedule from FH Salzburg website to google calendar",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Simon Reinsperger",
+  "license": "ISC",
+  "dependencies": {
+    "nightmare": "^2.7.0"
+  }
+}
