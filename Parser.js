@@ -35,7 +35,11 @@ Parser.prototype.getEvents = function (raw) {
 };
 
 Parser.prototype.parseDay = function (e) {
-  return moment(e.match(this.regDay)[1].split(' ')[1], 'DD-MM-YYYY').toISOString();
+
+  var date = e.match(this.regDay)[1].split(' ')[1];
+  return date;
+  // toISOString() returns "previous" day (I guess because of timezone issues)
+  return moment(date, 'DD-MM-YYYY').toISOString();
 };
 
 Parser.prototype.parseEvents = function (e) {
@@ -69,12 +73,13 @@ const fs = require('fs');
 (function () {
   'use strict';
 
-  const p = new Parser();
-
-  const raw = fs.readFileSync('./raw.txt').toString();
-
-  let events = p.getEvents(raw);
-
-  console.log(events[Math.floor(Math.random() * events.length)]);
+  // const p = new Parser();
+  //
+  // const raw = fs.readFileSync('./raw.txt').toString();
+  //
+  // let events = p.getEvents(raw);
+  //
+  // //console.log(events[Math.floor(Math.random() * events.length)]);
+  // console.log(events[3]);
 
 })();

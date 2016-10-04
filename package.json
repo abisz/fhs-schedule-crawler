@@ -9,6 +9,8 @@
   "author": "Simon Reinsperger",
   "license": "ISC",
   "dependencies": {
+    "google-auth-library": "^0.9.8",
+    "googleapis": "^14.0.0",
     "moment": "^2.15.1",
     "nightmare": "^2.7.0"
   }

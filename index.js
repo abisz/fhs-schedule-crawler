@@ -34,5 +34,9 @@ nightmare
   })
   .end()
   .then( (result) => {
-    parser.getEvents(result);
+
+    const events = parser.getEvents(result);
+
+    console.log('finished');
+    console.log(events[3]);
   });
