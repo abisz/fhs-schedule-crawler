@@ -9,6 +9,7 @@
   "author": "Simon Reinsperger",
   "license": "ISC",
   "dependencies": {
+    "bluebird": "^3.4.6",
     "google-auth-library": "^0.9.8",
     "googleapis": "^14.0.0",
     "moment": "^2.15.1",
