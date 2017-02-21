@@ -1,11 +1,12 @@
 const config = require('../config.json');
 
-const Nightmare = require('nightmare'),
-      Parser = require('./Parser.js'),
-      parser = new Parser(),
-      nightmare = Nightmare({
-        show: true,
-      });
+const Nightmare = require('nightmare');
+const Parser = require('./Parser.js');
+
+const parser = new Parser();
+const nightmare = Nightmare({
+  show: true,
+});
 
 nightmare
   .cookies.clearAll()
@@ -14,7 +15,7 @@ nightmare
   .type('#os_password', config.password)
   .click('#loginButton')
   .wait('#main')
-  .goto('https://intranet.fh-salzburg.ac.at/index.php?id=3341&type=98&druckliste=1&user=' + config.username + '&view=ss_studenten_veranstaltungen&suchsem=#now')
+  .goto(`https://intranet.fh-salzburg.ac.at/index.php?id=3341&type=98&druckliste=1&user=${config.username}&view=ss_studenten_veranstaltungen&suchsem=#now`)
   // this will redirect to a second login page
   .wait('form[action="/idp/Authn/UserPassword"]')
   .type('input[name="j_username"]', config.username)
@@ -22,16 +23,13 @@ nightmare
   .click('.such_button')
   // This is somehow needed - no idea what's going on!
   .wait(1000)
-  .goto('https://intranet.fh-salzburg.ac.at/index.php?id=3341&type=98&druckliste=1&user=' + config.username + '&view=ss_studenten_veranstaltungen&suchsem=#now')
+  .goto(`https://intranet.fh-salzburg.ac.at/index.php?id=3341&type=98&druckliste=1&user=${config.username}&view=ss_studenten_veranstaltungen&suchsem=#now`)
   .wait('.tx-mgstundenplan-pi1')
-  .evaluate( () => {
-    return document.querySelector('.tx-mgstundenplan-pi1').innerHTML;
-  })
+  // eslint-disable-next-line no-undef
+  .evaluate(() => document.querySelector('.tx-mgstundenplan-pi1').innerHTML)
   .end()
-  .then( (result) => {
-
+  .then((result) => {
     const events = parser.getEvents(result);
 
-    console.log('finished');
     console.log(events);
   });
