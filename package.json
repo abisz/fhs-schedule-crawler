@@ -1,8 +1,8 @@
 {
   "name": "fhs-schedule-crawler",
   "version": "0.0.0",
-  "description": "tool to save individual schedule from FH Salzburg website to google calendar",
-  "main": "index.js",
+  "description": "Command Line Tool to save individual schedule from FH Salzburg website to google calendar",
+  "main": "./src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -12,7 +12,7 @@
     "bluebird": "^3.4.6",
     "google-auth-library": "^0.9.8",
     "googleapis": "^14.0.0",
-    "moment": "^2.15.1",
+    "moment": "^2.17.1",
     "nightmare": "^2.7.0"
   }
 }

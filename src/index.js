@@ -1,9 +1,4 @@
-try {
-  const config = require('./config.json');
-} catch (e) {
-  console.error('No Config File found');
-  process.exit();
-}
+const config = require('../config.json');
 
 const Nightmare = require('nightmare'),
       Parser = require('./Parser.js'),
@@ -38,5 +33,5 @@ nightmare
     const events = parser.getEvents(result);
 
     console.log('finished');
-    console.log(events[3]);
+    console.log(events);
   });
