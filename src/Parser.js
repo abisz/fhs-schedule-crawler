@@ -1,4 +1,4 @@
-// const moment = require('moment');
+const he = require('he');
 
 class Parser {
 
@@ -35,8 +35,6 @@ class Parser {
 
   parseDay(e) {
     return e.match(this.regDay)[1].split(' ')[1];
-    // toISOString() returns "previous" day (I guess because of timezone issues)
-    // return moment(date, 'DD-MM-YYYY').toISOString();
   }
 
   parseEvents(e) {
@@ -49,16 +47,16 @@ class Parser {
   parseEvent(e) {
     const details = e
       .match(this.regTds)
-      .splice(0, 3)
       .map((f) => {
         const a = f.match(/<td.*>(.*?)<\/td>/i);
         return a ? a[1] : a;
       });
 
     return {
-      start: details[0].match(/\d\d:\d\d/)[0],
-      end: details[1].match(/\d\d:\d\d/)[0],
-      event: details[2],
+      start: he.decode(details[0].match(/\d\d:\d\d/)[0]),
+      end: he.decode(details[1].match(/\d\d:\d\d/)[0]),
+      event: details[2] ? he.decode(details[2]).trim() : '',
+      location: details[5] ? he.decode(details[5]).trim() : '',
     };
   }
 }

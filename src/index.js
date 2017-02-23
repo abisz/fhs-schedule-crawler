@@ -5,8 +5,10 @@ const Parser = require('./Parser.js');
 
 const parser = new Parser();
 const nightmare = Nightmare({
-  show: true,
+  show: false,
 });
+
+const util = require('util');
 
 nightmare
   .cookies.clearAll()
@@ -31,5 +33,5 @@ nightmare
   .then((result) => {
     const events = parser.getEvents(result);
 
-    console.log(events);
+    console.log(util.inspect(events, { showHidden: false, depth: null }));
   });
