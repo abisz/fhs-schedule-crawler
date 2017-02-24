@@ -13,9 +13,11 @@ class Parser {
   }
 
   getEvents(raw) {
+    const events = [];
+
     // Todo: solve this linting problem
     /* eslint-disable no-param-reassign */
-    return raw
+    raw
       .replace(this.regScripts, '')
       .match(this.regTables)
       .slice(2)
@@ -24,14 +26,11 @@ class Parser {
         day.date = this.parseDay(day.raw);
         return day;
       })
-      .map((day) => {
-        day.events = this.parseEvents(day.raw, day.date);
-        return day;
-      })
-      .map((e) => {
-        delete e.raw;
-        return e;
-      })
+      .forEach((day) => {
+        events.push(...this.parseEvents(day.raw, day.date));
+      });
+
+    return events
       .map((e) => {
         e.hash = hash(e);
         return e;
