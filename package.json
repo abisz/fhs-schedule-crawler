@@ -16,7 +16,9 @@
     "google-auth-library": "^0.9.8",
     "googleapis": "^14.0.0",
     "he": "^1.1.1",
-    "nightmare": "^2.7.0"
+    "moment": "^2.17.1",
+    "nightmare": "^2.7.0",
+    "object-hash": "^1.1.5"
   },
   "devDependencies": {
     "eslint": "^3.16.0",

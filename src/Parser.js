@@ -1,4 +1,6 @@
 const he = require('he');
+const hash = require('object-hash');
+const moment = require('moment');
 
 class Parser {
 
@@ -18,16 +20,20 @@ class Parser {
       .match(this.regTables)
       .slice(2)
       .map(e => Object({ raw: e }))
-      .map((e) => {
-        e.date = this.parseDay(e.raw);
-        return e;
+      .map((day) => {
+        day.date = this.parseDay(day.raw);
+        return day;
       })
-      .map((e) => {
-        e.events = this.parseEvents(e.raw);
-        return e;
+      .map((day) => {
+        day.events = this.parseEvents(day.raw, day.date);
+        return day;
       })
       .map((e) => {
         delete e.raw;
+        return e;
+      })
+      .map((e) => {
+        e.hash = hash(e);
         return e;
       });
     /* eslint-enable no-param-reassign */
@@ -37,14 +43,14 @@ class Parser {
     return e.match(this.regDay)[1].split(' ')[1];
   }
 
-  parseEvents(e) {
+  parseEvents(e, day) {
     return e
       .match(this.regTrs)
       .slice(2)
-      .map(f => this.parseEvent(f));
+      .map(f => this.parseEvent(f, day));
   }
 
-  parseEvent(e) {
+  parseEvent(e, day) {
     const details = e
       .match(this.regTds)
       .map((f) => {
@@ -52,9 +58,15 @@ class Parser {
         return a ? a[1] : a;
       });
 
+    const startTime = he.decode(details[0].match(/\d\d:\d\d/)[0]);
+    const endTime = he.decode(details[1].match(/\d\d:\d\d/)[0]);
+
+    const start = moment(`${day} ${startTime}`, 'DD.MM.YYYY HH:mm').toISOString();
+    const end = moment(`${day} ${endTime}`, 'DD.MM.YYYY HH:mm').toISOString();
+
     return {
-      start: he.decode(details[0].match(/\d\d:\d\d/)[0]),
-      end: he.decode(details[1].match(/\d\d:\d\d/)[0]),
+      start,
+      end,
       event: details[2] ? he.decode(details[2]).trim() : '',
       location: details[5] ? he.decode(details[5]).trim() : '',
     };
