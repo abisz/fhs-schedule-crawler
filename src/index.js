@@ -1,67 +1,87 @@
-const config = require('../config.json');
+#!/usr/bin/env node
 
-const Nightmare = require('nightmare');
+const fs = require('fs');
+const readline = require('readline');
+const program = require('commander');
+const debug = require('debug')('fhs-schedule-crawler');
+
+const app = require('../package.json');
+
+const Calendar = require('./Calendar.js');
 const Parser = require('./Parser.js');
-const Calenduh = require('calenduh');
+const Scraper = require('./Scraper.js');
 
 const parser = new Parser();
-const cal = new Calenduh('./client_secret.json');
-const nightmare = Nightmare({
-  show: false,
+const scraper = new Scraper();
+const cal = new Calendar('./client_secret.json');
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
 });
 
-function scrapeEvents() {
-  return nightmare
-    .cookies.clearAll()
-    .goto('https://myfhs.fh-salzburg.ac.at/index.action')
-    .type('#os_username', config.username)
-    .type('#os_password', config.password)
-    .click('#loginButton')
-    .wait('#main')
-    .goto(`https://intranet.fh-salzburg.ac.at/index.php?id=3341&type=98&druckliste=1&user=${config.username}&view=ss_studenten_veranstaltungen&suchsem=#now`)
-    // this will redirect to a second login page
-    .wait('form[action="/idp/Authn/UserPassword"]')
-    .type('input[name="j_username"]', config.username)
-    .type('input[name="j_password"]', config.password)
-    .click('.such_button')
-    // This is somehow needed - no idea what's going on!
-    .wait(1000)
-    .goto(`https://intranet.fh-salzburg.ac.at/index.php?id=3341&type=98&druckliste=1&user=${config.username}&view=ss_studenten_veranstaltungen&suchsem=#now`)
-    .wait('.tx-mgstundenplan-pi1')
-    // eslint-disable-next-line no-undef
-    .evaluate(() => document.querySelector('.tx-mgstundenplan-pi1').innerHTML)
-    .end();
-}
-
-function initCalendar(events) {
-  cal.findOrCreateCalendar(config.username)
-    .then((calendar) => {
-      events.forEach((e) => {
-        cal.createEvent(
-          calendar.id,
-          e.event,
-          e.start,
-          e.end,
-          {
-            location: e.location,
-            description: e.hash,
-          },
-        ).then((event) => {
-          console.log(`Created event: ${event.summary}`);
-        }).catch((err) => {
-          console.log('An error occurred while creating an event');
-          console.log(err);
-        });
+const login = () => {
+  debug('Start login process');
+  return new Promise((resolve) => {
+    rl.question('Please enter your fhs-code (fhsxxxxx): \n', (code) => {
+      // Todo: hide password
+      rl.question('Please enter your password: \n', (password) => {
+        rl.close();
+        resolve({ username: code, password });
       });
-    })
-    .catch((err) => {
-      console.log('Error occurred while finding the calendar');
-      console.log(err);
     });
-}
+  });
+};
 
-scrapeEvents()
-  // Todo: check why this happens
-  // .then(parser.getEvents) throws error
-  .then(raw => parser.getEvents(raw))
-  .then(initCalendar);
+const initCredentials = () => {
+  const configPath = `${__dirname}/../config.json`;
+  return new Promise((resolve) => {
+    fs.stat(configPath, (err) => {
+      if (!err) {
+        debug('Config file found');
+        // eslint-disable-next-line global-require, import/no-dynamic-require
+        const config = require(configPath);
+        resolve(config);
+      } else if (err.code === 'ENOENT') {
+        debug('No Config file found');
+        login()
+          .then((creds) => {
+            fs.writeFileSync(configPath, `{
+  "username": "${creds.username}",
+  "password": "${creds.password}"
+}
+            `);
+            resolve(creds);
+          });
+      } else {
+        debug('Error occured while searching config file');
+        debug(err);
+        process.exit();
+      }
+    });
+  });
+};
+
+const init = (config) => {
+  program
+    .version(app.version)
+    .option('-l, --login', 'Login with new user credentials')
+    .option('-i, --init', 'Init Calender')
+    .parse(process.argv);
+
+  if (program.login) {
+    debug('Login option chosen');
+  } else if (program.init) {
+    scraper.scrapeEvents(config)
+    // Todo: check why this happens
+    // .then(parser.getEvents) throws error
+      .then(raw => parser.getEvents(raw))
+      .then(cal.init, config.username);
+  }
+};
+
+initCredentials()
+.then(init)
+.catch((err) => {
+  debug('Error in program:');
+  debug(err);
+});
