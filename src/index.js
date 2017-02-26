@@ -71,11 +71,12 @@ const init = (config) => {
   if (program.login) {
     debug('Login option chosen');
   } else if (program.init) {
+    debug('Init option chosen');
     scraper.scrapeEvents(config)
     // Todo: check why this happens
     // .then(parser.getEvents) throws error
       .then(raw => parser.getEvents(raw))
-      .then(cal.init, config.username);
+      .then(events => cal.init(events, config.username));
   }
 };
 
