@@ -19,6 +19,8 @@ const rl = readline.createInterface({
   output: process.stdout,
 });
 
+const util = require('util');
+
 const login = () => {
   debug('Start login process');
   return new Promise((resolve) => {
@@ -77,6 +79,26 @@ const init = (config) => {
     // .then(parser.getEvents) throws error
       .then(raw => parser.getEvents(raw))
       .then(events => cal.init(events, config.username));
+  } else {
+    debug('Default option - syncing');
+    scraper.scrapeEvents(config)
+      .then(raw => parser.getEvents(raw))
+      .then((events) => {
+        cal.getEvents(config.username)
+          .then((calendarEvents) => {
+            console.log(util.inspect(calendarEvents, { showHidden: false, depth: null }));
+            console.log('****');
+            console.log(util.inspect(events, { showHidden: false, depth: null }));
+          })
+          .catch((err) => {
+            debug('Error from cal.getEvents()');
+            debug(err);
+          });
+      })
+      .catch((err) => {
+        debug('Error from scraper or parser');
+        debug(err);
+      });
   }
 };
 

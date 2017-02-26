@@ -18,16 +18,22 @@ class Calendar {
             // eslint-disable-next-line comma-dangle
             e.end, { location: e.location, description: e.hash }
           ).then((event) => {
-            console.log(`Created event: ${event.summary}`);
+            process.stdout.write(`Created event: ${event.summary}\n`);
           }).catch((err) => {
-            console.log('An error occurred while creating an event');
-            console.log(err);
+            debug('An error occurred while creating an event');
+            debug(err);
           });
         });
       }).catch((err) => {
         debug('Error occurred while finding the calendar');
         debug(err);
       });
+  }
+
+  getEvents(calendarName) {
+    debug('Starting Calendar.getEvents');
+    return this.cal.findOrCreateCalendar(calendarName)
+      .then(calendar => this.cal.events(calendar.id, {}));
   }
 }
 
