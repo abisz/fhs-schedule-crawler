@@ -14,12 +14,9 @@
   "author": "Simon Reinsperger",
   "license": "ISC",
   "dependencies": {
-    "bluebird": "^3.4.6",
     "calenduh": "^1.3.0",
     "commander": "^2.9.0",
     "debug": "^2.6.1",
-    "google-auth-library": "^0.9.8",
-    "googleapis": "^14.0.0",
     "he": "^1.1.1",
     "moment": "^2.17.1",
     "nightmare": "^2.7.0",
