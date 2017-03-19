@@ -19,7 +19,7 @@ const rl = readline.createInterface({
   output: process.stdout,
 });
 
-const util = require('util');
+// const util = require('util');
 
 const login = () => {
   debug('Start login process');
@@ -86,9 +86,20 @@ const init = (config) => {
       .then((events) => {
         cal.getEvents(config.username)
           .then((calendarEvents) => {
-            // console.log(util.inspect(calendarEvents, { showHidden: false, depth: null }));
-            // console.log('****');
-            // console.log(util.inspect(events, { showHidden: false, depth: null }));
+            const matches = [];
+            const mismatches = [];
+            events.forEach((e) => {
+              const match = calendarEvents
+                .find(calendarEvent => calendarEvent.description === e.hash);
+              if (match) {
+                debug('Match found');
+                matches.push(match.id);
+              } else {
+                debug('No match found');
+                mismatches.push(e);
+              }
+            });
+            // const toDelete = calendarEvents.filter(event => !matches.includes(event.id));
           })
           .catch((err) => {
             debug('Error from cal.getEvents()');

@@ -29,7 +29,7 @@ class Parser {
       .match(this.regTables)
       .slice(2)
       .map(e => Object.assign({ raw: e }))
-      .map(day => Object.assign(day, { data: this.parseDay(day.raw) }))
+      .map(day => Object.assign(day, { date: this.parseDay(day.raw) }))
       .forEach((day) => {
         events.push(...this.parseEvents(day.raw, day.date));
       });
