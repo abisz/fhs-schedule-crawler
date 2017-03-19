@@ -86,9 +86,9 @@ const init = (config) => {
       .then((events) => {
         cal.getEvents(config.username)
           .then((calendarEvents) => {
-            console.log(util.inspect(calendarEvents, { showHidden: false, depth: null }));
-            console.log('****');
-            console.log(util.inspect(events, { showHidden: false, depth: null }));
+            // console.log(util.inspect(calendarEvents, { showHidden: false, depth: null }));
+            // console.log('****');
+            // console.log(util.inspect(events, { showHidden: false, depth: null }));
           })
           .catch((err) => {
             debug('Error from cal.getEvents()');
