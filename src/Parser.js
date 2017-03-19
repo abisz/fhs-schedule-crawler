@@ -12,30 +12,29 @@ class Parser {
     this.regTrs = /<tr\b[^<]*(?:(?!<\/tr>)<[^<]*)*<\/tr>/gi;
   }
 
+  static hashEvent(e) {
+    return hash({
+      start: e.start,
+      end: e.end,
+      event: e.event,
+      location: e.location,
+    });
+  }
+
   getEvents(raw) {
     const events = [];
 
-    // Todo: solve this linting problem
-    /* eslint-disable no-param-reassign */
     raw
       .replace(this.regScripts, '')
       .match(this.regTables)
       .slice(2)
-      .map(e => Object({ raw: e }))
-      .map((day) => {
-        day.date = this.parseDay(day.raw);
-        return day;
-      })
+      .map(e => Object.assign({ raw: e }))
+      .map(day => Object.assign(day, { data: this.parseDay(day.raw) }))
       .forEach((day) => {
         events.push(...this.parseEvents(day.raw, day.date));
       });
 
-    return events
-      .map((e) => {
-        e.hash = hash(e);
-        return e;
-      });
-    /* eslint-enable no-param-reassign */
+    return events.map(e => Object.assign(e, { hash: Parser.hashEvent(e) }));
   }
 
   parseDay(e) {
