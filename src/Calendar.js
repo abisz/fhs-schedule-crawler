@@ -1,4 +1,5 @@
 const Calenduh = require('calenduh');
+const async = require('async');
 const debug = require('debug')('Calendar');
 
 class Calendar {
@@ -22,7 +23,11 @@ class Calendar {
   getEvents(calendarName) {
     debug('Starting Calendar.getEvents');
     return this.cal.findOrCreateCalendar(calendarName)
-      .then(calendar => this.cal.events(calendar.id, {}));
+      .then(calendar => this.cal.events(calendar.id)
+          .then(events => ({
+            calendar,
+            events,
+          })));
   }
 
   createEvents(events, i = 0, repeat = false) {
@@ -62,6 +67,28 @@ class Calendar {
         debug('An error occurred while creating an event');
         debug(err);
         reject();
+      });
+    });
+  }
+
+  deleteEvents(calendarId, eventIds) {
+    debug('deleteEvents()');
+
+    return new Promise((resolve, reject) => {
+      async.eachSeries(eventIds, (eventId, cb) => {
+        debug(`deleting event ${eventId}`);
+        this.cal.deleteEvent(calendarId, eventId)
+          .then(() => cb())
+          // can't pass err, because async would stop
+          .catch(() => cb());
+      }, (err) => {
+        debug('finished deleting events');
+        if (err) {
+          debug('An error occurred while deleting');
+          debug(err);
+          return reject(err);
+        }
+        return resolve();
       });
     });
   }

@@ -73,6 +73,12 @@ assert-plus@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/assert-plus/-/assert-plus-1.0.0.tgz#f12e0f3c5d77b0b1cdd9146942e4e96c1e4dd525"
 
+async:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/async/-/async-2.2.0.tgz#c324eba010a237e4fbd55a12dee86367d5c0ef32"
+  dependencies:
+    lodash "^4.14.0"
+
 async@^2.1.4, async@~2.1.4:
   version "2.1.5"
   resolved "https://registry.yarnpkg.com/async/-/async-2.1.5.tgz#e587c68580994ac67fc56ff86d3ac56bdbe810bc"
@@ -138,9 +144,9 @@ builtin-modules@^1.0.0, builtin-modules@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/builtin-modules/-/builtin-modules-1.1.1.tgz#270f076c5a72c02f5b65a47df94c5fe3a278892f"
 
-calenduh:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/calenduh/-/calenduh-1.3.0.tgz#cd6938db9817edc022872d7b689202f96327ce1f"
+calenduh@1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/calenduh/-/calenduh-1.4.0.tgz#0765d542613a33deefe517bd5c6c90f07ba8de08"
   dependencies:
     async "^2.1.4"
     debug "^2.6.1"

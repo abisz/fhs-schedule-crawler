@@ -85,9 +85,12 @@ const init = (config) => {
       .then(raw => parser.getEvents(raw))
       .then((events) => {
         cal.getEvents(config.username)
-          .then((calendarEvents) => {
+          .then((response) => {
+            const { calendar } = response;
+            const calendarEvents = response.events;
+
             const matches = [];
-            const mismatches = [];
+            const toAdd = [];
             events.forEach((e) => {
               const match = calendarEvents
                 .find(calendarEvent => calendarEvent.description === e.hash);
@@ -96,10 +99,11 @@ const init = (config) => {
                 matches.push(match.id);
               } else {
                 debug('No match found');
-                mismatches.push(e);
+                toAdd.push(e);
               }
             });
-            // const toDelete = calendarEvents.filter(event => !matches.includes(event.id));
+            const toDelete = calendarEvents.filter(event => !matches.includes(event.id));
+            cal.deleteEvents(calendar.id, toDelete.map(e => e.id));
           })
           .catch((err) => {
             debug('Error from cal.getEvents()');
