@@ -1,6 +1,6 @@
 {
   "name": "fhs-schedule-crawler",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Command Line Tool to save individual schedule from FH Salzburg website to google calendar",
   "main": "./src/index.js",
   "bin": {

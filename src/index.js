@@ -103,7 +103,10 @@ const init = (config) => {
               }
             });
             const toDelete = calendarEvents.filter(event => !matches.includes(event.id));
-            cal.deleteEvents(calendar.id, toDelete.map(e => e.id));
+            cal.deleteEvents(calendar.id, toDelete.map(e => e.id))
+              .then(() => {
+                cal.createEvents(toAdd.map(e => Object.assign(e, { calId: calendar.id })));
+              });
           })
           .catch((err) => {
             debug('Error from cal.getEvents()');

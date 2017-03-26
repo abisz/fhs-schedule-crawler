@@ -30,6 +30,8 @@ class Calendar {
           })));
   }
 
+  // TODO: refactor this to use async (like deleteEvents)
+  // TODO: move to Calenduh
   createEvents(events, i = 0, repeat = false) {
     debug(`createEvents ${i}/${events.length}`);
 
@@ -71,6 +73,7 @@ class Calendar {
     });
   }
 
+  // TODO: move to Calenduh
   deleteEvents(calendarId, eventIds) {
     debug('deleteEvents()');
 
