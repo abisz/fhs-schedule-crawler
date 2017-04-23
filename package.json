@@ -14,8 +14,7 @@
   "author": "Simon Reinsperger",
   "license": "ISC",
   "dependencies": {
-    "async": "^2.2.0",
-    "calenduh": "1.4.0",
+    "calenduh": "^1.5.0",
     "commander": "^2.9.0",
     "debug": "^2.6.1",
     "he": "^1.1.1",

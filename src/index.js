@@ -13,7 +13,7 @@ const Scraper = require('./Scraper.js');
 
 const parser = new Parser();
 const scraper = new Scraper();
-const cal = new Calendar('./client_secret.json');
+const cal = new Calendar(`${__dirname}/../client_secret.json`);
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
@@ -105,7 +105,11 @@ const init = (config) => {
             const toDelete = calendarEvents.filter(event => !matches.includes(event.id));
             cal.deleteEvents(calendar.id, toDelete.map(e => e.id))
               .then(() => {
-                cal.createEvents(toAdd.map(e => Object.assign(e, { calId: calendar.id })));
+                cal.createEvents(toAdd.map(e => Object.assign(e, { calId: calendar.id })))
+                  .then(() => {
+                    debug('Finished Syncing');
+                    process.exit();
+                  });
               });
           })
           .catch((err) => {
