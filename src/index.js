@@ -105,11 +105,16 @@ const init = (config) => {
             const toDelete = calendarEvents.filter(event => !matches.includes(event.id));
             cal.deleteEvents(calendar.id, toDelete.map(e => e.id))
               .then(() => {
-                cal.createEvents(toAdd.map(e => Object.assign(e, { calId: calendar.id })))
-                  .then(() => {
-                    debug('Finished Syncing');
-                    process.exit();
-                  });
+                if (toAdd.length > 0) {
+                  cal.createEvents(toAdd.map(e => Object.assign(e, { calId: calendar.id })))
+                    .then(() => {
+                      debug('Finished Syncing');
+                      process.exit();
+                    });
+                } else {
+                  debug('No events to add - exiting');
+                  process.exit();
+                }
               });
           })
           .catch((err) => {
